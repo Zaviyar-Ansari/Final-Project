@@ -35,8 +35,8 @@ const products = useSelector(state => state.cart.products )
       <div className='flex items-center justify-center py-4 space-x-10 text-sm font-bold '>
         <Link to="/" className='hover:underline'>Home</Link>
         <Link  to="/shop" className='hover:underline'>Shop</Link>
-        <Link  to="/" className='hover:underline'>Home</Link>
-        <Link  to="/" className='hover:underline'>Home</Link>
+        <Link  to="/" className='hover:underline'>About us</Link>
+        <Link  to="/" className='hover:underline'>Contact us</Link>
 
       </div>
     </nav> 
