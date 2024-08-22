@@ -4,18 +4,21 @@ import EmptyCart from '../assets/Images/emptycart.png';
 import { FaTrashAlt } from 'react-icons/fa';
 import Modal from '../components/Modal';
 import { useDispatch } from 'react-redux';
-import { removeFromCart } from '../redux/cartSlice';
+import { decreaseQuantity, increaseQuantity, removeFromCart } from '../redux/cartSlice';
+import { useNavigate} from "react-router-dom"
+
 const Cart = () => {
   const cart = useSelector((state) => state.cart);
   const [address, setAddress] = useState('Main Street, 0012');
   const [isModelOpen, setIsModelOpen] = useState(false);
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   return (
-    <div className='container mx-auto py-8 min-h-96 px-4 md:px-16 lg:px-24'>
+    <div className='container px-4 py-8 mx-auto min-h-96 md:px-16 lg:px-24'>
       {cart.products.length > 0 ? (
         <div>
-          <h3 className='text-2xl font-semibold mb-4'>SHOPPING CART</h3>
-          <div className='flex flex-col md:flex-row justify-between space-x-10 mt-8'>
+          <h3 className='mb-4 text-2xl font-semibold'>SHOPPING CART</h3>
+          <div className='flex flex-col justify-between mt-8 space-x-10 md:flex-row'>
             <div className='md:w-2/3'>
               <div className='flex items-center justify-between mb-4 text-xs font-bold border-b'>
                 <p>PRODUCTS</p>
@@ -28,18 +31,22 @@ const Cart = () => {
               </div>
               {cart.products.map((product) => (
                 <div key={product.id} className='flex items-center justify-between p-3 border-b'>
-                  <div className='md:flex items-center space-x-4'>
-                    <img src={product.image} alt={product.name} className='w-16 h-16 object-contain rounded' />
+                  <div className='items-center space-x-4 md:flex'>
+                    <img src={product.image} alt={product.name} className='object-contain w-16 h-16 rounded' />
                     <div className='flex-1 ml-4'>
                       <h3 className='text-lg font-semibold'>{product.name}</h3>
                     </div>
                   </div>
-                  <div className='flex space-x-12 items-center'>
+                  <div className='flex items-center space-x-12'>
                     <p>${product.price}</p>
                     <div className='flex items-center justify-center border'>
-                      <button className='text-xl font-bold px-1.5 border-r'>-</button>
-                      <p className='text-xl px-2'>{product.quantity}</p>
-                      <button className='text-xl px-1 border-l'>+</button>
+                      <button className='text-xl font-bold px-1.5 border-r' 
+                      onClick={() => dispatch(decreaseQuantity(product.id))}
+                      >-</button>
+                      <p className='px-2 text-xl'>{product.quantity}</p>
+                      <button className='px-1 text-xl border-l'
+                      onClick={() => dispatch(increaseQuantity(product.id))}
+                      >+</button>
                     </div>
                     <p>${(product.price * product.quantity).toFixed(2)}</p>
                     <button className='text-red-500 hover:text-red-700' onClick={() => dispatch(removeFromCart(product.id))}>
@@ -50,20 +57,20 @@ const Cart = () => {
               ))}
             </div>
 
-            <div className='md-w-1/3 bg-white p-6 rounded-lg shadow-md border'>
-              <h3 className='text-sm font-semibold mb-5'>CART TOTAL</h3>
-              <div className='flex justify-between mb-5 border-b pb-1'>
+            <div className='p-6 bg-white border rounded-lg shadow-md md-w-1/3'>
+              <h3 className='mb-5 text-sm font-semibold'>CART TOTAL</h3>
+              <div className='flex justify-between pb-1 mb-5 border-b'>
                 <span className='text-sm'>Total ITEMS:</span>
                 <span>{cart.totalQuantity}</span>
               </div>
-              <div className='mb-4 border-b pb-2'>
+              <div className='pb-2 mb-4 border-b'>
                 <p>Shipping:</p>
                 <p className='ml-2'>
                   Shipping to{" "}
                   <span className='text-xs font-bold'>{address}</span>
                 </p>
                 <button
-                  className='text-blue-500 hover:underline mt-1 ml-2'
+                  className='mt-1 ml-2 text-blue-500 hover:underline'
                   onClick={() => setIsModelOpen(true)}
                 >
                   Change address
@@ -73,7 +80,9 @@ const Cart = () => {
                 <span>Total Price:</span>
                 <span>${cart.totalPrice.toFixed(2)}</span>
               </div>
-              <button className='w-full bg-red-600 text-white py-2 hover:bg-red-800'>
+              <button className='w-full py-2 text-white bg-red-600 hover:bg-red-800' 
+              onClick={() => navigate('/checkout')}
+              >
                 Proceed to checkout
               </button>
             </div>
